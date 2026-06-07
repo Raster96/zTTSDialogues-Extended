@@ -8,7 +8,7 @@ https://www.youtube.com/watch?v=IOuVb_hIJX0
 
 1. **Download SAPI 5 compatible voice** (e.g., RHVoice, IVONA, Microsoft voices)
 2. **Install the voice** following the provider's instructions
-3. **Launch Gothic 2** with this plugin
+3. **Launch Gothic** with this plugin
 4. **Open Options → zTTSDialogues**
 5. **Select "Voice"** option to see all installed voices by name
 6. **Choose your preferred voice** - it will preview immediately!
