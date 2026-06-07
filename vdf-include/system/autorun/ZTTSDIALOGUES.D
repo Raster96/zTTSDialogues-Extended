@@ -86,18 +86,17 @@ instance C_MENUITEM_CHOICE_BASE(C_MENU_ITEM_DEF)
   flags    = flags | IT_TXT_CENTER;
 };
 
-instance C_MENUITEM_SLIDER_BASE(C_MENU_ITEM_DEF)
+instance C_MENUITEM_LISTBOX_BASE(C_MENU_ITEM_DEF)
 {
-  backpic       = SliderBackPic;
-  type          = MENU_ITEM_SLIDER;
-  fontname      = FontSmall;
-  posx          = Slider_PX;
-  posy          = Start_PY + Slider_DY;
-  dimx          = Slider_SX;
-  dimy          = Slider_SY;
-  flags         = flags & ~IT_SELECTABLE;
-  flags         = flags | IT_TXT_CENTER;
-  userstring[0] = SliderPosPic;
+  backpic  = ChoiceBackPic;
+  type     = MENU_ITEM_LISTBOX;
+  fontname = FontSmall;
+  posx     = Text_PX;
+  posy     = Start_PY;
+  dimx     = 7600;  // Wider than choice box for full voice names
+  dimy     = 3000;  // Taller to show multiple options
+  flags    = flags & ~IT_SELECTABLE;
+  flags    = flags | IT_TXT_CENTER;
 };
 
 instance MenuItem_Opt_Headline(C_MENU_ITEM_DEF)
@@ -146,7 +145,7 @@ instance MenuItem_Union_Auto_zTTSDialogues(C_MENU_ITEM_UNION_DEF)
 {
   text[0]          = "zTTSDialogues";
   text[1] = Str_GetLocalizedString(
-    "Наѝтройте параметры zTTSDialogues",
+    "Настройте параметры zTTSDialogues",
     "Configure zTTSDialogues settings",
     "zTTSDialogues-Einstellungen konfigurieren",
     "Zmień ustawienia zTTSDialogues"
@@ -232,40 +231,43 @@ instance MenuItem_Opt_zTTSDialogues_Language_Choice(C_MENU_ITEM_DEF)
   text[0]               = "Other|Russian|English|Deutsch|Polish|Romanian|Italian|Czech|Spanish";
 };
 
-instance MenuItem_Opt_zTTSDialogues_Gender(C_MENU_ITEM)
+instance MenuItem_Opt_zTTSDialogues_SelectedVoiceIndex(C_MENU_ITEM)
 {
   CurrentMenuItem_PY = 3;
   C_MENU_ITEM_TEXT_BASE();
   fontname = FontSmall;
   posy += Menu_DY * CurrentMenuItem_PY + Text_DY;
+  dimx = 7600;  // Wider text field to align with the wider choice box below
   
   text[0] = Str_GetLocalizedString(
-    "Пол",
-    "Gender",
-    "Geschlecht",
-    "Płeć"
+    "Голос",
+    "Voice",
+    "Stimme",
+    "Głos"
   );
   text[1] = Str_GetLocalizedString(
-    "Предпочитаемый пол для Windows TTS",
-    "Preferred gender of the Windows TTS",
-    "Bevorzugtes Geschlecht der Windows TTS",
-    "Preferowana płeć dla Windows TTS"
+    "Выберите голос для озвучки диалогов",
+    "Select voice for dialogue narration",
+    "Wählen Sie die Stimme für Dialoge",
+    "Wybierz głos do odczytywania dialogów"
   );
 };
 
-instance MenuItem_Opt_zTTSDialogues_Gender_Choice(C_MENU_ITEM_DEF)
+instance MenuItem_Opt_zTTSDialogues_SelectedVoiceIndex_Choice(C_MENU_ITEM_DEF)
 {
-  C_MENUITEM_CHOICE_BASE();
-  posy += Menu_DY * CurrentMenuItem_PY;
+  backpic  = ChoiceBackPic;
+  type     = MENU_ITEM_CHOICEBOX;
+  fontname = FontSmall;
+  posx     = 1200;
+  posy     = Start_PY + (Menu_DY * 3) + Choice_DY;
+  dimx     = 6400;
+  dimy     = Choice_SY;
+  flags    = flags & ~IT_SELECTABLE;
+  flags    = flags | IT_TXT_CENTER;
   
-  onchgsetoption        = "Gender";
+  onchgsetoption        = "SelectedVoiceIndex";
   onchgsetoptionsection = "zTTSDialogues";
-  text[0]               = Str_GetLocalizedString(
-    "Мужчина|Женщина",
-    "Male|Female",
-    "Männlich|Weiblich",
-    "Mężczyzna|Kobieta"
-  );
+  text[0]               = "0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50";
 };
 
 instance MenuItem_Opt_zTTSDialogues_VoiceRate(C_MENU_ITEM)

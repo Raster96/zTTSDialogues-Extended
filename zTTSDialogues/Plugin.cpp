@@ -3,6 +3,9 @@
 #include "resource.h"
 
 namespace GOTHIC_ENGINE {
+
+	void ModifyVoiceSelectionMenu();
+	
 	HOOK Ivk_zCView_DialogMessageCXY PATCH(&zCView::DialogMessageCXY, &zCView::DialogMessageCXY_Union);
 	void zCView::DialogMessageCXY_Union(zSTRING const& name, zSTRING const& text, float time, zCOLOR& color)
 	{
@@ -95,7 +98,8 @@ namespace GOTHIC_ENGINE {
 
 		ReplaceAllDialogues = zoptions->ReadBool("zTTSDialogues", "ReplaceAllDialogues", ReplaceAllDialogues);
 
-		Gender = zoptions->ReadInt("zTTSDialogues", "Gender", 0) == 0 ? L"Male" : L"Female";
+		// Voice selection: 0 = Auto (by language), 1+ = specific voice index
+		SelectedVoiceIndex = zoptions->ReadInt("zTTSDialogues", "SelectedVoiceIndex", 0);
 
 		Language = zoptions->ReadInt("zTTSDialogues", "Language", Union.GetSystemLanguage());
 
@@ -163,6 +167,7 @@ namespace GOTHIC_ENGINE {
 
 	void Game_Init() {
 		UpdateSettings();
+		ModifyVoiceSelectionMenu();
 	}
 
 	void Game_Exit() {
@@ -177,10 +182,79 @@ namespace GOTHIC_ENGINE {
 	void Game_PostLoop() {
 	}
 
+	int PreviousVoiceIndex = -1;
+	int PreviousVoiceRate = -1;
+	bool VoiceTestPending = false;
+
 	void Game_MenuLoop() {
+
+		zCMenu* activeMenu = zCMenu::GetActive();
+		if (activeMenu) {
+			zSTRING menuName = activeMenu->GetName();
+			menuName.Upper();
+			
+			if (menuName == "MENU_OPT_ZTTSDIALOGUES" || menuName == "ZTTSDIALOGUES:MENU_OPT_ZTTSDIALOGUES") {
+				ModifyVoiceSelectionMenu();
+				
+				int currentVoiceIndex = zoptions->ReadInt("zTTSDialogues", "SelectedVoiceIndex", 0);
+				int currentVoiceRate = zoptions->ReadInt("zTTSDialogues", "VoiceRate", 10);
+				
+				if (PreviousVoiceIndex != -1 && (currentVoiceIndex != PreviousVoiceIndex || currentVoiceRate != PreviousVoiceRate)) {
+					VoiceTestPending = true;
+					PreviousVoiceIndex = currentVoiceIndex;
+					PreviousVoiceRate = currentVoiceRate;
+				} else if (PreviousVoiceIndex == -1) {
+					PreviousVoiceIndex = currentVoiceIndex;
+					PreviousVoiceRate = currentVoiceRate;
+				}
+				
+				if (VoiceTestPending) {
+					VoiceTestPending = false;
+					
+					UpdateSettings();
+					
+					string testText;
+					
+					switch (Language) {
+						case Lang_Rus:
+							// Russian: "Выберите голос для озвучки диалогов"
+							testText = string("\xC2\xFB\xE1\xE5\xF0\xE8\xF2\xE5 \xE3\xEE\xEB\xEE\xF1 \xE4\xEB\xFF \xEE\xE7\xE2\xF3\xF7\xEA\xE8 \xE4\xE8\xE0\xEB\xEE\xE3\xEE\xE2");
+							break;
+						case Lang_Ger:
+							// German: "Wählen Sie die Stimme für Dialoge"
+							testText = "W\xE4hlen Sie die Stimme f\xFCr Dialoge";
+							break;
+						case Lang_Pol:
+							// Polish: "Wybierz głos do odczytywania dialogów"
+							testText = "Wybierz g\xB3os do odczytywania dialog\xF3w";
+							break;
+						case Lang_Rou:
+							// Romanian: "Selectați vocea pentru naratiunea dialogurilor"
+							testText = "Selecta\xFEi vocea pentru naratiunea dialogurilor";
+							break;
+						case Lang_Ita:
+							// Italian: "Seleziona la voce per la narrazione del dialogo"
+							testText = "Seleziona la voce per la narrazione del dialogo";
+							break;
+						case Lang_Cze:
+							// Czech: "Vyberte hlas pro vyprávění dialogu"
+							testText = "Vyberte hlas pro vypr\xE1v\xEC\xED dialogu";
+							break;
+						case Lang_Esp:
+							// Spanish: "Seleccione la voz para la narración del diálogo"
+							testText = "Seleccione la voz para la narraci\xF3n del di\xE1logo";
+							break;
+						case Lang_Eng:
+						default:
+							testText = "Select voice for dialogue narration";
+							break;
+					}
+					SAPI.Read(testText, nullptr, 0);
+				}
+			}
+		}
 	}
 
-	// Information about current saving or loading world
 	TSaveLoadGameInfo& SaveLoadGameInfo = UnionCore::SaveLoadGameInfo;
 
 	void Game_SaveBegin() {
@@ -232,6 +306,38 @@ namespace GOTHIC_ENGINE {
 	}
 
 	void Game_DefineExternals() {
+	}
+	
+	bool VoiceMenuModified = false;
+	
+	void ModifyVoiceSelectionMenu() {
+		if (VoiceMenuModified) return;
+		
+		zCMenuItem* voiceItem = zCMenuItem::GetByName("MENUITEM_OPT_ZTTSDIALOGUES_SELECTEDVOICEINDEX_CHOICE");
+		if (!voiceItem) {
+			voiceItem = zCMenuItem::GetByName("ZTTSDIALOGUES:MENUITEM_OPT_ZTTSDIALOGUES_SELECTEDVOICEINDEX_CHOICE");
+			if (!voiceItem) return;
+		}
+		
+		Array<VoiceInfo> voices = SAPI.GetAvailableVoices();
+		if (voices.GetNum() == 0) return;
+		
+		string choiceText = "Auto";  // 0 = Auto
+		
+		int maxVoices = voices.GetNum() > 50 ? 50 : voices.GetNum();
+		for (int i = 0; i < maxVoices; i++) {
+			string voiceName = string(voices[i].name.WToA(CodePage));
+			
+			if (voiceName.Length() > 80) {
+				voiceName = voiceName.Copy(0, 77) + "...";
+			}
+			
+			choiceText += "|" + voiceName;
+		}
+		
+		voiceItem->SetText(choiceText, 0, 0);
+		
+		VoiceMenuModified = true;
 	}
 
 	void Game_ApplyOptions() {

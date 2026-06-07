@@ -9,7 +9,15 @@ namespace GOTHIC_ENGINE {
 	int Language = 1;
 	wstring LanguageID;
 	uint32 CodePage;
-	wstring Gender = L"Male";
+	int SelectedVoiceIndex = 0; // 0 = Auto (select by language), 1+ = specific voice index
+
+	// Voice information structure
+	struct VoiceInfo {
+		wstring id;
+		wstring name;
+		wstring language;
+		wstring gender;
+	};
 
 	class zSAPI {
 	public:
@@ -23,12 +31,15 @@ namespace GOTHIC_ENGINE {
 		oCNpc* GetCurrentSpeaker();
 		int GetCurrentHandle();
 		void ReloadSettings();
+		Array<VoiceInfo> GetAvailableVoices();
 
 	private:
 		void Init();
 		void Release();
+		void EnumerateVoices();
 		ISpVoice* voice;
 		oCNpc* currentspeaker = nullptr;
 		int currenthandle = 0;
+		Array<VoiceInfo> availableVoices;
 	};
 }

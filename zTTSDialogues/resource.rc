@@ -77,12 +77,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Sefaris"
             VALUE "FileDescription", "Windows TTS for unvoiced dialogues"
-            VALUE "FileVersion", "1.0.0.87"
+            VALUE "FileVersion", "1.0.0.114"
             VALUE "InternalName", "zTTSDialogues"
             VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "zTTSDialogues"
             VALUE "ProductName", "zTTSDialogues"
-            VALUE "ProductVersion", "1.0.0.87"
+            VALUE "ProductVersion", "1.0.0.114"
         END
     END
     BLOCK "VarFileInfo"
