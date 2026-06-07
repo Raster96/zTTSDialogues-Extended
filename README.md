@@ -4,6 +4,22 @@ This fork introduces **enhanced voice selection** capabilities, making it easier
 <img width="839" height="310" alt="image" src="https://github.com/user-attachments/assets/de1a54fb-7667-46b5-9eda-bde0df8cfa5d" />
 https://www.youtube.com/watch?v=IOuVb_hIJX0
 
+### How to Install Additional SAPI 5 Voices
+
+1. **Download SAPI 5 compatible voice** (e.g., RHVoice, IVONA, Microsoft voices)
+2. **Install the voice** following the provider's instructions
+3. **Launch Gothic 2** with this plugin
+4. **Open Options → zTTSDialogues**
+5. **Select "Voice"** option to see all installed voices by name
+6. **Choose your preferred voice** - it will preview immediately!
+
+### Recommended Voice Sources
+
+- **RHVoice** - Free, open-source, high-quality voices for multiple languages
+- **Microsoft Speech Platform** - Additional voices from Microsoft
+- **IVONA** - Professional quality voices (commercial)
+- **Windows built-in voices** - Already included in Windows 10/11
+
 ### Key Improvements
 
 **Direct Voice Selection by Name**
@@ -85,20 +101,3 @@ SelectedVoiceIndex=0
 ; NOTE: The 'Gender' option has been replaced with 'SelectedVoiceIndex'
 ; for more flexible voice selection
 ```
-
-### How to Install Additional SAPI 5 Voices
-
-1. **Download SAPI 5 compatible voice** (e.g., RHVoice, IVONA, Microsoft voices)
-2. **Install the voice** following the provider's instructions
-3. **Launch Gothic 2** with this plugin
-4. **Open Options → zTTSDialogues**
-5. **Select "Voice"** option to see all installed voices by name
-6. **Choose your preferred voice** - it will preview immediately!
-
-### Recommended Voice Sources
-
-- **RHVoice** - Free, open-source, high-quality voices for multiple languages
-- **Microsoft Speech Platform** - Additional voices from Microsoft
-- **IVONA** - Professional quality voices (commercial)
-- **Windows built-in voices** - Already included in Windows 10/11
-
