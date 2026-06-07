@@ -2,6 +2,7 @@
 
 This fork introduces **enhanced voice selection** capabilities, making it easier to use custom SAPI 5 voices:
 <img width="839" height="310" alt="image" src="https://github.com/user-attachments/assets/de1a54fb-7667-46b5-9eda-bde0df8cfa5d" />
+https://www.youtube.com/watch?v=IOuVb_hIJX0
 
 ### Key Improvements
 
